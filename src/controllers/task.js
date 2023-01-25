@@ -1,7 +1,14 @@
 const { response, request } = require('express');
 const { Task } = require('../db');
 
-const getTasks = () => {};
+const getTasks = async (req = request, res = response) => {
+	const tasks = await Task.findAll();
+	try {
+		res.send(tasks);
+	} catch (error) {
+		res.status(400).send(error);
+	}
+};
 
 const createTask = async (req = request, res = response) => {
 	const { description } = req.body;
@@ -17,4 +24,5 @@ const createTask = async (req = request, res = response) => {
 
 module.exports = {
 	createTask,
+	getTasks,
 };
