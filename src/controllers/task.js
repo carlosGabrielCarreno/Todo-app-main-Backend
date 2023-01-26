@@ -24,7 +24,17 @@ const createTask = async (req = request, res = response) => {
 	}
 };
 
+const editStatus = async (req = request, res = response) => {
+	try {
+		// edit status
+		res.send('edit in process...');
+	} catch (error) {
+		res.status(400).send(error);
+	}
+};
+
 module.exports = {
 	createTask,
 	getTasks,
+	editStatus,
 };

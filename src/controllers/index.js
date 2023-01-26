@@ -1,6 +1,7 @@
-const { getTasks, createTask } = require('./task');
+const { getTasks, createTask, editStatus } = require('./task');
 
 module.exports = {
 	getTasks,
 	createTask,
+	editStatus,
 };
