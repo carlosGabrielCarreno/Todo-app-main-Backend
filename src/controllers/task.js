@@ -16,7 +16,9 @@ const createTask = async (req = request, res = response) => {
 	if (description.length <= 1) return res.status(404).send('Missing Data');
 
 	try {
-		//const task = await Task.cre
+		const task = await Task.create({ description: description, status: true });
+		console.log(task);
+		res.send('ok?');
 	} catch (error) {
 		res.status(400).send(error);
 	}

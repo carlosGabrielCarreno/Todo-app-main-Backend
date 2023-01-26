@@ -1,6 +1,5 @@
 const { Router, request, response } = require('express');
-const { getTasks } = require('../controllers');
-const { createTask } = require('../controllers/task');
+const { getTasks, createTask } = require('../controllers');
 const { Task } = require('../db');
 
 const router = Router();
