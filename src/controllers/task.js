@@ -6,7 +6,7 @@ const getTasks = async (req = request, res = response) => {
 	try {
 		res.send(tasks);
 	} catch (error) {
-		res.status(400).send(error);
+		res.status(400).send(error.message);
 	}
 };
 
@@ -17,19 +17,29 @@ const createTask = async (req = request, res = response) => {
 
 	try {
 		const task = await Task.create({ description: description, status: true });
-		console.log(task);
-		res.send('ok?');
+		res.json(task);
 	} catch (error) {
-		res.status(400).send(error);
+		res.status(400).send(error.message);
 	}
 };
 
 const editStatus = async (req = request, res = response) => {
+	let { id } = req.params;
+	let { status } = req.body;
+	const taskToUpdate = await Task.findByPk(id);
+
+	if (!taskToUpdate) return res.status(404).send('Task not found');
+
 	try {
 		// edit status
-		res.send('edit in process...');
+		await taskToUpdate.update({
+			status: status,
+		});
+		await taskToUpdate.save();
+		const tasksUpdates = await Task.findAll();
+		res.json(tasksUpdates);
 	} catch (error) {
-		res.status(400).send(error);
+		res.status(400).send(error.message);
 	}
 };
 
