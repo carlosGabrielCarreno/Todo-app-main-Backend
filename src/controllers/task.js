@@ -25,7 +25,7 @@ const createTask = async (req = request, res = response) => {
 
 const editStatus = async (req = request, res = response) => {
 	let { id } = req.params;
-	let { status } = req.body;
+	//let { status } = req.body;
 	const taskToUpdate = await Task.findByPk(id);
 
 	if (!taskToUpdate) return res.status(404).send('Task not found');
@@ -33,7 +33,7 @@ const editStatus = async (req = request, res = response) => {
 	try {
 		// edit status
 		await taskToUpdate.update({
-			status: status,
+			status: !taskToUpdate.status,
 		});
 		await taskToUpdate.save();
 		const tasksUpdates = await Task.findAll();
