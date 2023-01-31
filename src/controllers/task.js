@@ -1,45 +1,51 @@
-const { response, request } = require('express');
-const { Task } = require('../db');
+const {
+	getTasksService,
+	createTaskService,
+	updateTaskStatusService,
+	deleteTaskService,
+} = require('../service');
 
-const getTasks = async (req = request, res = response) => {
-	const tasks = await Task.findAll();
+const getTasks = async (req, res) => {
 	try {
-		res.send(tasks);
+		const tasks = await getTasksService();
+		return res.send(tasks);
 	} catch (error) {
-		res.status(400).send(error.message);
+		return res.status(400).send(error.message);
 	}
 };
 
-const createTask = async (req = request, res = response) => {
+const createTask = async (req, res) => {
 	const { description } = req.body;
 
-	if (description.length <= 1) return res.status(404).send('Missing Data');
-
 	try {
-		const task = await Task.create({ description: description, status: true });
-		res.json(task);
+		const createdTask = await createTaskService(description);
+		return res.status(201).json(createdTask);
 	} catch (error) {
-		res.status(400).send(error.message);
+		return res.status(400).send(error.message);
 	}
 };
 
-const editStatus = async (req = request, res = response) => {
-	let { id } = req.params;
-	//let { status } = req.body;
-	const taskToUpdate = await Task.findByPk(id);
-
-	if (!taskToUpdate) return res.status(404).send('Task not found');
+const editStatus = async (req, res) => {
+	const { id } = req.params;
 
 	try {
-		// edit status
-		await taskToUpdate.update({
-			status: !taskToUpdate.status,
-		});
-		await taskToUpdate.save();
-		const tasksUpdates = await Task.findAll();
-		res.json(tasksUpdates);
+		const updatedTask = await updateTaskStatusService(id);
+		return res.status(200).json(updatedTask);
 	} catch (error) {
-		res.status(400).send(error.message);
+		return res.status(404).send(error.message);
+	}
+};
+
+const deleteTask = async (req, res) => {
+	const { id } = req.params;
+
+	if (!id) return res.status(400).send('Missing task ID');
+
+	try {
+		await deleteTaskService(id);
+		return res.status(200).send('Task deleted successfully');
+	} catch (error) {
+		return res.status(404).send(error.message);
 	}
 };
 
@@ -47,4 +53,5 @@ module.exports = {
 	createTask,
 	getTasks,
 	editStatus,
+	deleteTask,
 };
